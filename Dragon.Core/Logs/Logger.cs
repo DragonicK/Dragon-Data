@@ -106,7 +106,7 @@ public sealed class Logger : ILogger {
         Console.Write(Environment.NewLine);
     }
 
-    private ConsoleColor GetColor(WarningLevel level) => level switch {
+    private static ConsoleColor GetColor(WarningLevel level) => level switch {
         WarningLevel.Info => ConsoleColor.White,
         WarningLevel.Error => ConsoleColor.Red,
         WarningLevel.Warning => ConsoleColor.Yellow,
@@ -114,7 +114,7 @@ public sealed class Logger : ILogger {
         _ => ConsoleColor.White
     };
 
-    private string GetWarningLevelName(WarningLevel level) => level switch {
+    private static string GetWarningLevelName(WarningLevel level) => level switch {
         WarningLevel.Info => "[INFO]",
         WarningLevel.Error => "[ERROR]",
         WarningLevel.Warning => "[WARNING]",
