@@ -6,11 +6,27 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <BaseOutputPath>..\Build\Service</BaseOutputPath>
+    <BaseIntermediateOutputPath>..\Build\Service\obj</BaseIntermediateOutputPath>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="obj\**" />
+    <EmbeddedResource Remove="obj\**" />
+    <None Remove="obj\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Dragon.Core\Dragon.Core.csproj" />
     <ProjectReference Include="..\Dragon.Network\Dragon.Network.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Configurations\" />
+    <Folder Include="Network\" />
+    <Folder Include="Server\" />
+    <Folder Include="Routes\" />
+    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>

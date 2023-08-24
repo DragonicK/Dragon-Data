@@ -5,11 +5,16 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <BaseOutputPath>..\Build\Core</BaseOutputPath>
+    <BaseIntermediateOutputPath>..\Build\Core\Obj</BaseIntermediateOutputPath>
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="obj\**" />
     <Compile Remove="Service\**" />
+    <EmbeddedResource Remove="obj\**" />
     <EmbeddedResource Remove="Service\**" />
+    <None Remove="obj\**" />
     <None Remove="Service\**" />
   </ItemGroup>
 

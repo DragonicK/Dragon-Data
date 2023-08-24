@@ -17,7 +17,7 @@
 mono_crash.*
 
 # Build results
-[Bb]uild/Data/
+[Bb]uild/*
 # Data Debug
 [Bb]uild/Data/Debug/net7.0/runtimes/
 [Bb]uild/Data/Debug/net7.0/*.*
