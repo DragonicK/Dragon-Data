@@ -31,9 +31,7 @@ public sealed class IncomingMessageEventHandler : IIncomingMessageEventHandler {
         
         buffer.Reset();
 
-        var crypto = connection.CryptoEngine;
-
-        if (crypto.Decipher(pool!.Content, 0, pool.Length)) {
+        if (pool is not null) {
             var value = BitConverter.ToInt32(pool.Content, 0);
 
             if (Enum.IsDefined(typeof(MessageHeader), value)) {
@@ -42,9 +40,6 @@ public sealed class IncomingMessageEventHandler : IIncomingMessageEventHandler {
             else {
                 WriteWarning(value, pool.Length, connection);
             }
-        }
-        else {
-            Logger.Warning("Invalid CheckSum", $"From Id: {connection.Id} Length: {pool.Length} ");
         }
     }
 

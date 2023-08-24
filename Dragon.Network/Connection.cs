@@ -3,7 +3,6 @@ using System.Security.Cryptography;
 
 using Dragon.Core.Logs;
 
-using Dragon.Network.Security;
 using Dragon.Network.Incoming;
 
 using Dragon.Network.Pool;
@@ -17,8 +16,6 @@ public sealed class Connection : IConnection {
     public Socket? Socket { get; set; }
     public ILogger? Logger { get; set; }
     public bool Connected => connected;
-    public byte[] CipherKey { get; set; }
-    public IEngineCrypto CryptoEngine { get; set; }
     public IEngineBufferPool? EngineBufferPool { get; set; }
     public IIncomingMessageQueue? IncomingMessageQueue { get; set; }
     public EventHandler<IConnection>? OnDisconnect { get; set; }
@@ -36,9 +33,6 @@ public sealed class Connection : IConnection {
         buffer = new byte[ReceiveBufferSize];
         reader = new ByteBuffer(ReceiveBufferSize);
 
-        CryptoEngine = new BlowFishCipher();
-
-        CipherKey = RandomNumberGenerator.GetBytes(16);
 
         connected = true;
     }
@@ -127,9 +121,5 @@ public sealed class Connection : IConnection {
 
             Disconnect();
         }
-    }
-
-    public void UpdateKey(byte[] key) {
-        CryptoEngine.UpdateKey(key);
     }
 }

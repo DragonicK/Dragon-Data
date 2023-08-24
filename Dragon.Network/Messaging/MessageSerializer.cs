@@ -9,17 +9,7 @@ public sealed class MessageSerializer : ISerializer {
     public byte[] Serialize<T>(T type) {
         var buffer = new ByteBuffer();
 
-        // Write packet data.
         WriteClass(type, buffer);
-
-        // Add padding to checksum and cipher.
-        var length = buffer.Length() + 4;
-
-        length += 8 - length % 8;
-
-        var remaining = length - buffer.Length();
-
-        buffer.WriteEmptyBytes(remaining);
 
         return buffer.ToArray();
     }
