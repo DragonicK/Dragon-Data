@@ -19,8 +19,4 @@
     <None Remove="Service\**" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Include="..\.editorconfig" Link=".editorconfig" />
-  </ItemGroup>
-
 </Project>

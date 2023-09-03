@@ -55,7 +55,12 @@ public sealed class Query : PacketRoute, IPacketRoute {
 
         if (context is not null) {
             try {
-                context.Open();
+                var error = context.Open();
+
+                if (error.Number != 0) {
+                    GetLogger().Error("Error Code", error.Message);
+                    GetLogger().Error("Error Message", error.Message);
+                }
 
                 if (context.IsOpen()) {
                     response = GetResponseFromDatabase(context, packet);
