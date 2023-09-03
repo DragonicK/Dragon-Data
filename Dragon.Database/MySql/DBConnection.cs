@@ -5,23 +5,12 @@ using MySql.Data.MySqlClient;
 namespace Dragon.Database.MySql;
 
 public sealed class DBConnection : IDBConnection {
-    public string Name { get; set; }
     public MySqlConnection Connection { get; set; }
 
-    private readonly string connectionString;
+    private readonly string _connectionString;
 
-    public DBConnection(DBConfiguration dBConfiguration) {
-        Name = dBConfiguration.Name;
-
-        connectionString = $"Server={dBConfiguration.DataSource};";
-        connectionString += $"Port={dBConfiguration.Port};";
-        connectionString += $"Database={dBConfiguration.Database};";
-        connectionString += $"Uid={dBConfiguration.UserId};";
-        connectionString += $"Pwd={dBConfiguration.Password};";
-        connectionString += $"MinimumPoolSize={dBConfiguration.MinPoolSize};";
-        connectionString += $"MaximumPoolSize={dBConfiguration.MaxPoolSize};";
-        connectionString += "Pooling=true;";
-        connectionString += "SSLMode = None;";
+    public DBConnection(string connectionString) {
+        _connectionString = connectionString;
 
         Connection = new MySqlConnection();
     }
@@ -29,7 +18,7 @@ public sealed class DBConnection : IDBConnection {
     public DBError Open() {
         var dbError = new DBError();
 
-        Connection.ConnectionString = connectionString;
+        Connection.ConnectionString = _connectionString;
 
         try {
             Connection.Open();

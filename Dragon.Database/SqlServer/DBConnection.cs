@@ -4,23 +4,10 @@ using System.Data.SqlClient;
 namespace Dragon.Database.SqlServer;
 
 public sealed class DBConnection : IDBConnection {
-    public string Name { get; set; }
     public SqlConnection Connection { get; }
 
-    public DBConnection(DBConfiguration dBConfiguration) {
-        Name = dBConfiguration.Name;
-
-        var sqlConnectionString = new SqlConnectionStringBuilder() {
-            DataSource = dBConfiguration.DataSource,
-            InitialCatalog = dBConfiguration.Database,
-            Password = dBConfiguration.Password,
-            UserID = dBConfiguration.UserId,
-            Pooling = true,
-            MinPoolSize = dBConfiguration.MinPoolSize,
-            MaxPoolSize = dBConfiguration.MaxPoolSize
-        };
-
-        Connection = new SqlConnection(sqlConnectionString.ToString());
+    public DBConnection(string connectionString) {
+          Connection = new SqlConnection(connectionString);
     }
 
     public void Close() {

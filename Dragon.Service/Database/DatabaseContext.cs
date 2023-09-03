@@ -4,8 +4,8 @@ using Dragon.Database;
 
 namespace Dragon.Service.Database;
 
-public sealed class Context : DBTemplate {
-    public Context(IDBFactory dBFactory) : base(dBFactory) { }
+public sealed class DatabaseContext : DBTemplate {
+    public DatabaseContext(IDBFactory dBFactory) : base(dBFactory) { }
 
     public List<string> ExecuteReader(string query, string separator, int fieldCount) {
         var list = new List<string>();
@@ -20,7 +20,7 @@ public sealed class Context : DBTemplate {
         while (reader.Read()) {
             line.Clear();
 
-            for (var i = 0; i < fieldCount; i++) {
+            for (var i = 0; i < fieldCount; ++i) {
                 line.Append($"{reader.GetData(i)}{separator}");
             }
 
@@ -32,11 +32,15 @@ public sealed class Context : DBTemplate {
         return list;
     }
 
-    public int ExecuteNonQuery(string query) {
+    public List<string> ExecuteNonQuery(string query) {
+        var list = new List<string>();  
+
         var command = factory.GetCommand(sqlConnection);
 
         command.SetCommand(query);
 
-        return command.ExecuteNonQuery();
+        list.Add(command.ExecuteNonQuery().ToString());
+
+        return list;
     }
 }

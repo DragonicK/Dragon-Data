@@ -1,10 +1,10 @@
 ﻿namespace Dragon.Database.MySql;
 
 public sealed class DBFactory : IDBFactory {
-    readonly DBConfiguration configuration;
+    private readonly string _conString;
 
-    public DBFactory(DBConfiguration dBConfiguration) {
-        configuration = dBConfiguration;
+    public DBFactory(string connectionString) {
+        _conString = connectionString;
     }
 
     public IDBCommand GetCommand(IDBConnection dBConnection) {
@@ -12,6 +12,6 @@ public sealed class DBFactory : IDBFactory {
     }
 
     public IDBConnection GetConnection() {
-        return new DBConnection(configuration);
+        return new DBConnection(_conString);
     }
 }

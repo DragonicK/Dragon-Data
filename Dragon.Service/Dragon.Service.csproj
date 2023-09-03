@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -8,8 +8,11 @@
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <BaseOutputPath>..\Build\Service</BaseOutputPath>
     <BaseIntermediateOutputPath>..\Build\Service\obj</BaseIntermediateOutputPath>
+    <NoWarn>$(NoWarn);ENC0097;IDE0160</NoWarn>
   </PropertyGroup>
 
+ 
+  
   <ItemGroup>
     <Compile Remove="obj\**" />
     <EmbeddedResource Remove="obj\**" />

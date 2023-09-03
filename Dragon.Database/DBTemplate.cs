@@ -20,12 +20,12 @@ public abstract class DBTemplate {
         sqlConnection = factory.GetConnection();
     }
 
-    public string GetConnectionName() {
-        return sqlConnection != null ? sqlConnection.Name : string.Empty;
-    }
-
     public DBError Open() {
         return sqlConnection.Open();
+    }
+
+    public bool IsOpen() {
+        return sqlConnection.IsOpen();
     }
 
     public void Close() {

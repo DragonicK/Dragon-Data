@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dragon.Core", "Dragon.Core\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dragon.Network", "Dragon.Network\Dragon.Network.csproj", "{799AE913-C8BD-475E-AA4A-B15184FAB3D2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dragon.Database", "Dragon.Database\Dragon.Database.csproj", "{1644DFB5-91BC-4ECA-9E1C-F1F8EF590F36}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dragon.Database", "Dragon.Database\Dragon.Database.csproj", "{1644DFB5-91BC-4ECA-9E1C-F1F8EF590F36}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
