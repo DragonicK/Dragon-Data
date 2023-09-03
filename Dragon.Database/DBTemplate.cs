@@ -21,7 +21,7 @@ public abstract class DBTemplate {
     }
 
     public string GetConnectionName() {
-        return (sqlConnection != null) ? sqlConnection.Name : string.Empty;
+        return sqlConnection != null ? sqlConnection.Name : string.Empty;
     }
 
     public DBError Open() {

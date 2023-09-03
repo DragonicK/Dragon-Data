@@ -10,5 +10,6 @@ public interface IConnectionRepository {
     bool Contains(int connectionId);
     void Clear();
     int Count();
+    void Disconnect();
     IEnumerator<KeyValuePair<int, IConnection>> GetEnumerator();
 }

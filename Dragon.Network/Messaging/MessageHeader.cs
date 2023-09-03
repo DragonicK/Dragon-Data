@@ -2,5 +2,6 @@
 
 public enum MessageHeader {
     Ping = 1,
-    Query
+    Query,
+    Response
 }

@@ -20,14 +20,10 @@ public sealed class ConnectionRepository : IConnectionRepository {
         }
 
         return Connections.GetOrAdd(connectionId, default(IConnection)!);
-
-        //return Connections[connectionId];
     }
 
     public IConnection GetFromId(int connectionId) {
         return Connections.GetOrAdd(connectionId, default(IConnection)!);
-
-        //return Connections[connectionId];
     }
 
     public IConnection RemoveFromId(int connectionId) {
@@ -46,6 +42,10 @@ public sealed class ConnectionRepository : IConnectionRepository {
 
     public int Count() {
         return Connections.Count;
+    }
+
+    public void Disconnect() {
+        Connections.Select(x => x.Value).ToList().ForEach(x => x.Disconnect());
     }
 
     public IEnumerator<KeyValuePair<int, IConnection>> GetEnumerator() {
