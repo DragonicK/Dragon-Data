@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Dragon.Core\Dragon.Core.csproj" />
+    <ProjectReference Include="..\Dragon.Database\Dragon.Database.csproj" />
     <ProjectReference Include="..\Dragon.Network\Dragon.Network.csproj" />
   </ItemGroup>
 
