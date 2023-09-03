@@ -12,11 +12,14 @@ namespace Dragon.Service.Services;
 
 public sealed class ConfigurationService : IService, IConfiguration {
     public ServicePriority Priority { get; private set; } = ServicePriority.First;
+    public bool Debug { get; private set; }
     public IpAddress Server { get; private set; }
     public Allocation Allocation { get; private set; }
     public int MaximumConnections { get; private set; }
 
     public ConfigurationService() {
+        Debug = true;
+
         Server = new IpAddress() {
             Ip = "0.0.0.0",
             Port = 7002

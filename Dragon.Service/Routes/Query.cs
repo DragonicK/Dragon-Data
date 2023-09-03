@@ -1,4 +1,7 @@
-﻿using Dragon.Core.Logs;
+﻿using System.Text;
+using System.Security.Cryptography;
+
+using Dragon.Core.Logs;
 using Dragon.Core.Common;
 using Dragon.Core.Services;
 
@@ -14,9 +17,15 @@ namespace Dragon.Service.Routes;
 public sealed class Query : PacketRoute, IPacketRoute {
     public MessageHeader Header => MessageHeader.Query;
 
+    private static char[] Characters => "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".ToCharArray();
+   
+    private string ContentIdentifier = string.Empty;
+
     public Query(IServiceInjector injector) : base(injector) { }
 
     public async void Process(IConnection connection, object packet) {
+        ContentIdentifier = GetContentIdentifier();
+
         var received = packet as PacketQuery;
 
         var logger = GetLogger();
@@ -25,12 +34,18 @@ public sealed class Query : PacketRoute, IPacketRoute {
         var result = new List<string>();
 
         if (received is not null) {
-            var response = await Task.Run(() => ExecuteQuery(received));
+            var details = Configuration!.Debug;
 
-            GetPacketSender().SendResponse(connection, received, response);
+            WriteReceivedPacket(details, logger, received);
+
+            var results = await Task.Run(() => ExecuteQuery(received));
+
+            WriteQueryResult(details, logger, results);
+
+            GetPacketSender().SendResponse(connection, received, results);
         }
         else {
-            logger?.Error(GetType().Name, "Packet Query Failed: NULL");
+            logger?.Error(ContentIdentifier, "Packet Query Failed: NULL");
         }
     }
 
@@ -96,19 +111,45 @@ public sealed class Query : PacketRoute, IPacketRoute {
     private Task WriteExceptionLog(PacketQuery packet, Exception ex) {
         var logger = GetLogger();
 
-        logger.Error(GetType().Name, $"Exception: {ex.Message}");
-        logger.Error(GetType().Name, $"StackTrace: {ex.StackTrace}");
+        logger.Error(ContentIdentifier, $"Exception: {ex.Message}");
+        logger.Error(ContentIdentifier, $"StackTrace: {ex.StackTrace}");
 
-        logger.Error(GetType().Name, $"Query: {packet.Query}");
-        logger.Error(GetType().Name, $"Database: {nameof(packet.Database)}");
-        logger.Error(GetType().Name, $"Operation: {nameof(packet.Operation)}");
-        logger.Error(GetType().Name, $"Index: {packet.Index}");
-        logger.Error(GetType().Name, $"Packet Id: {packet.PacketId}");
-        logger.Error(GetType().Name, $"Connection String: {packet.Connection}");
-        logger.Error(GetType().Name, $"Field Count: {packet.FieldCount}");
-        logger.Error(GetType().Name, $"Field Separator: {packet.FieldSeparator}");
+        logger.Error(ContentIdentifier, $"Query: {packet.Query}");
+        logger.Error(ContentIdentifier, $"Database: {GetDatabaseText(packet.Database)}");
+        logger.Error(ContentIdentifier, $"Operation: {GetOperationText(packet.Operation)}");
+        logger.Error(ContentIdentifier, $"Packet Id: {packet.PacketId}");
+        logger.Error(ContentIdentifier, $"Player Index: {packet.Index}");
+        logger.Error(ContentIdentifier, $"Connection String: {packet.Connection}");
+        logger.Error(ContentIdentifier, $"Field Count: {packet.FieldCount}");
+        logger.Error(ContentIdentifier, $"Field Separator: {packet.FieldSeparator}");
 
         return Task.CompletedTask;
+    }
+
+    private void WriteReceivedPacket(bool details, ILogger logger, PacketQuery packet) {
+        logger.Info(ContentIdentifier, $"Database: {GetDatabaseText(packet.Database)}");
+        logger.Info(ContentIdentifier, $"Operation: {GetOperationText(packet.Operation)}");
+        logger.Info(ContentIdentifier, $"Packet Id: {packet.PacketId}");
+        logger.Info(ContentIdentifier, $"Player Index: {packet.Index}");
+
+        if (details) {
+            logger.Info(ContentIdentifier, $"Field Count: {packet.FieldCount}");
+            logger.Info(ContentIdentifier, $"Field Separator: {packet.FieldSeparator}");
+            logger.Info(ContentIdentifier, $"Connection String: {packet.Connection}");
+            logger.Info(ContentIdentifier, $"Query: {packet.Query}");
+        }
+    }
+
+    private void WriteQueryResult(bool details, ILogger logger, List<string> results) {
+        logger.Info(ContentIdentifier, $"Result Count: {results.Count}");
+
+        if (details) {
+            var index = 0;
+  
+            results.ForEach(x => {
+                logger.Info(ContentIdentifier, $"Line {++index}: {x}");
+            });
+        }
     }
 
     private ILogger GetLogger() {
@@ -117,5 +158,35 @@ public sealed class Query : PacketRoute, IPacketRoute {
 
     private IPacketSender GetPacketSender() {
         return PacketService!.PacketSender!;
+    }
+
+    private string GetOperationText(OperationType type) {
+        return type == OperationType.ExecuteNonQuery ? "ExecuteNonQuery" : "ExecuteReader";
+    }
+
+    private string GetDatabaseText(DatabaseType type) {
+        return type == DatabaseType.MySql ? "MySql" : "SqlServer";
+    }
+
+    public static string GetContentIdentifier() {
+        const int Size = 6;
+        const int UIntSize = 4;
+
+        var data = new byte[UIntSize * Size];
+
+        using var crypto = RandomNumberGenerator.Create();
+
+        crypto.GetBytes(data);
+
+        var builder = new StringBuilder(Size);
+
+        for (int i = 0; i < Size; ++i) {
+            var rnd = BitConverter.ToUInt32(data, i * UIntSize);
+            var idx = rnd % Characters.Length;
+
+            builder.Append(Characters[idx]);
+        }
+
+        return builder.ToString();
     }
 }
