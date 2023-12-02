@@ -4,9 +4,7 @@ using Dragon.Database;
 
 namespace Dragon.Service.Database;
 
-public sealed class DatabaseContext : DBTemplate {
-    public DatabaseContext(IDBFactory dBFactory) : base(dBFactory) { }
-
+public sealed class DatabaseContext(IDBFactory dBFactory) : DBTemplate(dBFactory) {
     public List<string> ExecuteReader(string query, string separator, int fieldCount) {
         var list = new List<string>();
         var line = new StringBuilder();
@@ -24,12 +22,20 @@ public sealed class DatabaseContext : DBTemplate {
                 line.Append($"{reader.GetData(i)}{separator}");
             }
 
-            list.Add(line.ToString());
+            list.Add(GetTextWithoutLastSeparator(line));
         }
 
         reader.Close();
 
         return list;
+    }
+
+    private static string GetTextWithoutLastSeparator(StringBuilder builder) {
+        if (builder.Length > 0) {
+            return builder.Remove(builder.Length - 1, 1).ToString();
+        }
+
+        return string.Empty;
     }
 
     public List<string> ExecuteNonQuery(string query) {

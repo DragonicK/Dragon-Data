@@ -1,13 +1,8 @@
 ﻿namespace Dragon.Network;
 
-public sealed class IndexGenerator : IIndexGenerator {
-    private readonly HashSet<int> indexes;
-    private readonly int Maximum;
-
-    public IndexGenerator(int maximum) {
-        indexes = new HashSet<int>(maximum);
-        Maximum = maximum;
-    }
+public sealed class IndexGenerator(int maximum) : IIndexGenerator {
+    private readonly HashSet<int> indexes = new(maximum);
+    private readonly int Maximum = maximum;
 
     public int GetNextIndex() {
         for (var i = 1; i <= Maximum; ++i) {

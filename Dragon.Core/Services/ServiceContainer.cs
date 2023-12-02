@@ -7,7 +7,7 @@ public sealed class ServiceContainer : IServiceContainer {
     public ServiceContainer() => container = new Dictionary<Type, IService>();
 
     public ServiceContainer(IService[] instances) {
-        container = new Dictionary<Type, IService>();
+        container = [];
 
         foreach (var instance in instances) {
             container.Add(instance.GetType(), instance);

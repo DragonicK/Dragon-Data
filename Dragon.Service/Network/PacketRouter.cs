@@ -4,14 +4,9 @@ using Dragon.Network;
 
 namespace Dragon.Service.Network;
 
-public sealed class PacketRouter : IPacketRouter {
-    private readonly Dictionary<Type, IPacketRoute> routes;
-    private readonly ILogger _logger;
-
-    public PacketRouter(ILogger logger) {
-        routes = new Dictionary<Type, IPacketRoute>();
-        _logger = logger;
-    }
+public sealed class PacketRouter(ILogger logger) : IPacketRouter {
+    private readonly Dictionary<Type, IPacketRoute> routes = [];
+    private readonly ILogger _logger = logger;
 
     public void Add(Type key, IPacketRoute value) => routes.Add(key, value);
 

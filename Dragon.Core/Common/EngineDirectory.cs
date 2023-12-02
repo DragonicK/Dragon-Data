@@ -4,7 +4,7 @@ public sealed class EngineDirectory {
     private readonly List<string> directory;
 
     public EngineDirectory() {
-        directory = new List<string>();
+        directory = [];
     }
 
     public void Add(string folder) {

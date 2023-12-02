@@ -4,15 +4,10 @@ using System.Collections.Concurrent;
 
 namespace Dragon.Network;
 
-public sealed class ConnectionRepository : IConnectionRepository {
-    public ConcurrentDictionary<int, IConnection> Connections { get; private set; }
+public sealed class ConnectionRepository(ILogger logger) : IConnectionRepository {
+    public ConcurrentDictionary<int, IConnection> Connections { get; private set; } = new ConcurrentDictionary<int, IConnection>();
 
-    private readonly ILogger _logger;
-
-    public ConnectionRepository(ILogger logger) {
-        _logger = logger;   
-        Connections = new ConcurrentDictionary<int, IConnection>();
-    }
+    private readonly ILogger _logger = logger;
 
     public IConnection AddClientFromId(int connectionId) {
         if (!Connections.ContainsKey(connectionId)) {

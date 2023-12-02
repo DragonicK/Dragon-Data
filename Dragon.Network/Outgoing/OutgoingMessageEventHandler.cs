@@ -1,11 +1,7 @@
 ﻿namespace Dragon.Network.Outgoing;
-public class OutgoingMessageEventHandler : IOutgoingMessageEventHandler {
+public class OutgoingMessageEventHandler(IOutgoingMessagePublisher outgoingMessagePublisher) : IOutgoingMessageEventHandler {
 
-    public IOutgoingMessagePublisher OutgoingMessagePublisher { get; }
-
-    public OutgoingMessageEventHandler(IOutgoingMessagePublisher outgoingMessagePublisher) {
-        OutgoingMessagePublisher = outgoingMessagePublisher;
-    }
+    public IOutgoingMessagePublisher OutgoingMessagePublisher { get; } = outgoingMessagePublisher;
 
     public void OnEvent(RingBufferByteArray buffer, long sequence, bool endOfBatch) {
         OutgoingMessagePublisher.Broadcast(

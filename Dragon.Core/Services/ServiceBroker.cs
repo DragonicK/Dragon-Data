@@ -7,7 +7,7 @@ public sealed class ServiceBroker : IServiceBroker {
     private readonly Dictionary<Type, IService> services;
 
     public ServiceBroker() {
-        services = new Dictionary<Type, IService>();
+        services = [];
     }
 
     public IServiceContainer GetContainer() {

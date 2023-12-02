@@ -2,13 +2,9 @@
 
 namespace Dragon.Core.Services;
 
-public sealed class ServiceInjector : IServiceInjector {
+public sealed class ServiceInjector(IServiceContainer container) : IServiceInjector {
 
-    private readonly IServiceContainer _container;
-
-    public ServiceInjector(IServiceContainer container) {
-        _container = container;
-    }
+    private readonly IServiceContainer _container = container;
 
     public void Inject(object target) {
         InjectObject(target);

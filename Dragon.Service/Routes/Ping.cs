@@ -7,10 +7,8 @@ using Dragon.Service.Network;
 
 namespace Dragon.Service.Routes;
 
-public sealed class Ping : PacketRoute, IPacketRoute {
+public sealed class Ping(IServiceInjector injector) : PacketRoute(injector), IPacketRoute {
     public MessageHeader Header => MessageHeader.Ping;
-
-    public Ping(IServiceInjector injector) : base(injector) { }
 
     public void Process(IConnection connection, object packet) {
 

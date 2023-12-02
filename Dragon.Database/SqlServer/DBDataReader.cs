@@ -2,12 +2,8 @@
 
 namespace Dragon.Database.SqlServer;
 
-public sealed class DBDataReader : IDBDataReader {
-    private readonly SqlDataReader sqlReader;
-
-    public DBDataReader(SqlDataReader sqlDataReader) {
-        sqlReader = sqlDataReader;
-    }
+public sealed class DBDataReader(SqlDataReader sqlDataReader) : IDBDataReader {
+    private readonly SqlDataReader sqlReader = sqlDataReader;
 
     public void Close() {
         sqlReader.Close();

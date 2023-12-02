@@ -2,12 +2,8 @@
 
 namespace Dragon.Database.MySql;
 
-public sealed class DBDataReader : IDBDataReader {
-    private readonly MySqlDataReader sqlReader;
-
-    public DBDataReader(MySqlDataReader reader) {
-        sqlReader = reader;
-    }
+public sealed class DBDataReader(MySqlDataReader reader) : IDBDataReader {
+    private readonly MySqlDataReader sqlReader = reader;
 
     public void Close() {
         sqlReader.Close();

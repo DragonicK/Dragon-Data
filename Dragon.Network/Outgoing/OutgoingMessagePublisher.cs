@@ -1,11 +1,7 @@
 ﻿namespace Dragon.Network.Outgoing;
 
-public class OutgoingMessagePublisher : IOutgoingMessagePublisher {
-    public IConnectionRepository ConnectionRepository { get; }
-
-    public OutgoingMessagePublisher(IConnectionRepository connectionRepository) {
-        ConnectionRepository = connectionRepository;
-    }
+public class OutgoingMessagePublisher(IConnectionRepository connectionRepository) : IOutgoingMessagePublisher {
+    public IConnectionRepository ConnectionRepository { get; } = connectionRepository;
 
     public void Broadcast(TransmissionTarget peers, IList<int> destination, int exceptDestination, byte[] buffer, int length) {
         IntegerToByteArray(length - 4, buffer, 0);
