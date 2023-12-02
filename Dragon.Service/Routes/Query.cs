@@ -14,14 +14,12 @@ using Dragon.Service.Database;
 
 namespace Dragon.Service.Routes;
 
-public sealed class Query : PacketRoute, IPacketRoute {
+public sealed class Query(IServiceInjector injector) : PacketRoute(injector), IPacketRoute {
     public MessageHeader Header => MessageHeader.Query;
 
     private static char[] Characters => "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".ToCharArray();
    
     private string ContentIdentifier = string.Empty;
-
-    public Query(IServiceInjector injector) : base(injector) { }
 
     public async void Process(IConnection connection, object packet) {
         ContentIdentifier = GetContentIdentifier();
@@ -97,7 +95,7 @@ public sealed class Query : PacketRoute, IPacketRoute {
             return context!.ExecuteNonQuery(query);
         }
 
-        return new List<string>();
+        return [];
     }
 
     private DatabaseContext? GetDatabaseContext(PacketQuery packet ) {
