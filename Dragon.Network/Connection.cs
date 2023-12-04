@@ -66,7 +66,8 @@ public sealed class Connection : IConnection {
                 reader.Write(buffer, length);
                 Array.Clear(buffer, 0, length);
 
-                Logger?.Debug("Received Buffer", $"Length {pLength}");
+                Logger?.Debug("Received Buffer", $"Length {length}");
+                Logger?.Debug("Current Buffer", $"Length {reader.Length()}");
 
                 if (reader.Length() >= 4) {
                     pLength = reader.ReadInt32(false);
@@ -109,6 +110,8 @@ public sealed class Connection : IConnection {
                 }
 
                 reader.Trim();
+
+                Logger?.Debug("Current Buffer", $"Length {reader.Length()}");
 
                 Socket.BeginReceive(buffer, 0, ReceiveBufferSize, SocketFlags.None, OnReceive, null);
             }
