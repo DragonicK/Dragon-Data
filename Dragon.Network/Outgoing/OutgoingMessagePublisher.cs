@@ -1,27 +1,29 @@
-﻿namespace Dragon.Network.Outgoing;
+﻿using Dragon.Network.Pool;
+
+namespace Dragon.Network.Outgoing;
 
 public class OutgoingMessagePublisher(IConnectionRepository connectionRepository) : IOutgoingMessagePublisher {
     public IConnectionRepository ConnectionRepository { get; } = connectionRepository;
 
-    public void Broadcast(TransmissionTarget peers, IList<int> destination, int exceptDestination, byte[] buffer, int length) {
-        IntegerToByteArray(length - 4, buffer, 0);
+    public void Broadcast(TransmissionTarget peers, IList<int> destination, int exceptDestination, IEngineBufferWriter buffer) {
+        IntegerToByteArray(buffer.Length - 4, buffer.Content, 0);
 
         switch (peers) {
             case TransmissionTarget.Destination:
-                Broadcast(destination, buffer, length);
+                Broadcast(destination, buffer);
                 break;
 
             case TransmissionTarget.Broadcast:
-                Broadcast(buffer, length);
+                Broadcast(buffer);
                 break;
 
             case TransmissionTarget.BroadcastExcept:
-                Broadcast(destination, exceptDestination, buffer, length);
+                Broadcast(destination, exceptDestination, buffer);
                 break;
         }
     }
 
-    private void Broadcast(IList<int> destination, int except, byte[] buffer, int length) {
+    private void Broadcast(IList<int> destination, int except, IEngineBufferWriter buffer) {
         for (var i = 0; i < destination.Count; i++) {
             var id = destination[i];
 
@@ -30,14 +32,14 @@ public class OutgoingMessagePublisher(IConnectionRepository connectionRepository
 
                 if (connection is not null) {
                     if (connection.Connected) {
-                        Send(buffer, connection, length);
+                        Send(connection, buffer);
                     }
                 }
             }
         }
     }
 
-    private void Broadcast(IList<int> destination, byte[] buffer, int length) {
+    private void Broadcast(IList<int> destination, IEngineBufferWriter buffer) {
         IConnection connection;
 
         for (var i = 0; i < destination.Count; i++) {
@@ -45,24 +47,24 @@ public class OutgoingMessagePublisher(IConnectionRepository connectionRepository
 
             if (connection is not null) {
                 if (connection.Connected) {
-                    Send(buffer, connection, length);
+                    Send(connection, buffer);
                 }
             }
         }
     }
 
-    private void Broadcast(byte[] buffer, int length) {
+    private void Broadcast(IEngineBufferWriter buffer) {
         foreach (var (_, connection) in ConnectionRepository) {
             if (connection is not null) {
                 if (connection.Connected) {
-                    Send(buffer, connection, length);
+                    Send(connection, buffer);
                 }
             }
         }
     }
 
-    private static void Send(byte[] buffer, IConnection connection, int length) {
-        connection.Send(buffer, length);
+    private static void Send(IConnection connection, IEngineBufferWriter buffer) {
+        connection.Send(buffer.Content, buffer.Length);
     }
 
     private static void IntegerToByteArray(int value, byte[] buffer, int offset) {

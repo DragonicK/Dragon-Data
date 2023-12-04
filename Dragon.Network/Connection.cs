@@ -1,5 +1,4 @@
 ﻿using System.Net.Sockets;
-using System.Security.Cryptography;
 
 using Dragon.Core.Logs;
 
@@ -16,14 +15,14 @@ public sealed class Connection : IConnection {
     public Socket? Socket { get; set; }
     public ILogger? Logger { get; set; }
     public bool Connected => connected;
-    public IEngineBufferPool? EngineBufferPool { get; set; }
+    public IEngineBufferPool? IncomingEngineBufferPool { get; set; }
     public IIncomingMessageQueue? IncomingMessageQueue { get; set; }
     public EventHandler<IConnection>? OnDisconnect { get; set; }
 
     private const int ReceiveBufferSize = 1024;
 
     private readonly byte[] buffer;
-    private readonly ByteBuffer reader;
+    private readonly PacketBuffer packet;
 
     private bool connected = false;
 
@@ -31,7 +30,7 @@ public sealed class Connection : IConnection {
         IpAddress = string.Empty;
 
         buffer = new byte[ReceiveBufferSize];
-        reader = new ByteBuffer(ReceiveBufferSize);
+        packet = new PacketBuffer(ReceiveBufferSize);
 
 
         connected = true;
@@ -63,35 +62,35 @@ public sealed class Connection : IConnection {
             else {
                 var pLength = 0;
 
-                reader.Write(buffer, length);
+                packet.Write(buffer, length);
+
                 Array.Clear(buffer, 0, length);
 
                 Logger?.Debug("Received Buffer", $"Length {length}");
-                Logger?.Debug("Current Buffer", $"Length {reader.Length()}");
 
-                if (reader.Length() >= 4) {
-                    pLength = reader.ReadInt32(false);
+                if (packet.Length() >= 4) {
+                    pLength = packet.ReadInt32(false);
 
                     if (pLength <= 0) {
                         return;
                     }
                 }
 
-                while (pLength > 0 && pLength <= reader.Length() - 4) {
-                    if (pLength <= reader.Length() - 4) {
-                        reader.ReadInt32();
+                while (pLength > 0 && pLength <= packet.Length() - 4) {
+                    if (pLength <= packet.Length() - 4) {
+                        packet.ReadInt32();
 
                         Logger?.Debug("Received Packet", $"Length {pLength}");
 
-                        var sequence = EngineBufferPool?.GetNextBuffer();
-
-                        if (sequence!.ContentCapacity < pLength) {
-                            sequence!.EnsureCapacity(pLength);
-                        }
+                        var sequence = IncomingEngineBufferPool?.GetNextBufferReader();
 
                         sequence!.Reset();
 
-                        reader.ReadBytes(sequence.Content, pLength);
+                        if (sequence!.Capacity < pLength) {
+                            sequence!.EnsureCapacity(pLength);
+                        }
+
+                        packet.ReadBytes(sequence.Content, pLength);
 
                         sequence.Length = pLength;
 
@@ -100,8 +99,8 @@ public sealed class Connection : IConnection {
 
                     pLength = 0;
 
-                    if (reader.Length() >= 4) {
-                        pLength = reader.ReadInt32(false);
+                    if (packet.Length() >= 4) {
+                        pLength = packet.ReadInt32(false);
 
                         if (pLength < 0) {
                             return;
@@ -109,9 +108,9 @@ public sealed class Connection : IConnection {
                     }
                 }
 
-                reader.Trim();
+                packet.Trim();
 
-                Logger?.Debug("Current Buffer", $"Length {reader.Length()}");
+                Logger?.Debug("Trim Buffer", $"Length {packet.Length()}");
 
                 Socket.BeginReceive(buffer, 0, ReceiveBufferSize, SocketFlags.None, OnReceive, null);
             }

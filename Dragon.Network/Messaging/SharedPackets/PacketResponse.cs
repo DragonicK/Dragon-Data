@@ -16,5 +16,5 @@ public sealed class PacketResponse : IMessagePacket {
     /// <summary>
     /// Content.
     /// </summary>
-    public string[] Content { get; set; } = Array.Empty<string>();
+    public string[] Content { get; set; } = [];
 }

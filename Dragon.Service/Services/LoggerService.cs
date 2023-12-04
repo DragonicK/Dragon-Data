@@ -4,7 +4,7 @@ using Dragon.Core.Services;
 namespace Dragon.Service.Services;
 
 public sealed class LoggerService : IService {
-    public ServicePriority Priority => ServicePriority.First;
+    public ServicePriority Priority => ServicePriority.Starter;
     public ILogger? Logger { get; private set; }
     public ConfigurationService? Configuration { get; private set; }
 

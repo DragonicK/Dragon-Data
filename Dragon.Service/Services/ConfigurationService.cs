@@ -11,11 +11,11 @@ using Dragon.Service.Configurations.Data;
 namespace Dragon.Service.Services;
 
 public sealed class ConfigurationService : IService, IConfiguration {
-    public ServicePriority Priority { get; private set; } = ServicePriority.First;
-    public bool Debug { get; private set; }
-    public IpAddress Server { get; private set; }
-    public Allocation Allocation { get; private set; }
-    public int MaximumConnections { get; private set; }
+    public ServicePriority Priority { get; set; } = ServicePriority.First;
+    public bool Debug { get; set; }
+    public IpAddress Server { get; set; }
+    public Allocation Allocation { get; set; }
+    public int MaximumConnections { get; set; }
 
     public ConfigurationService() {
         Debug = true;
@@ -26,8 +26,10 @@ public sealed class ConfigurationService : IService, IConfiguration {
         };
 
         Allocation = new Allocation() {
-            IncomingMessageAllocatedSize = ushort.MaxValue,
-            OutgoingMessageAllocatedSize = ushort.MaxValue,
+            IncomingMessageAllocatedSize = 2048,
+            OutgoingMessageAllocatedSize = 2048,
+            BufferReaderSize = 4096,
+            BufferWriterSize = 10240
         };
 
         MaximumConnections = byte.MaxValue;

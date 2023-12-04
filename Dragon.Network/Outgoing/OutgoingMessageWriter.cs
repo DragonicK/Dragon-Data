@@ -1,13 +1,28 @@
-﻿namespace Dragon.Network.Outgoing;
+﻿using Dragon.Network.Pool;
 
-public class OutgoingMessageWriter(IOutgoingMessageQueue outgoingMessageQueue, ISerializer serializer) : IOutgoingMessageWriter {
-    public IOutgoingMessageQueue OutgoingMessageQueue { get; } = outgoingMessageQueue;
-    public ISerializer Serializer { get; } = serializer;
+namespace Dragon.Network.Outgoing;
+
+public class OutgoingMessageWriter : IOutgoingMessageWriter {
+    public IOutgoingMessageQueue OutgoingMessageQueue { get; } 
+    public IEngineBufferPool BufferPool { get; } 
+    public ISerializer Serializer { get; } 
+
+    public OutgoingMessageWriter(IOutgoingMessageQueue outgoingMessageQueue, IEngineBufferPool bufferPool, ISerializer serializer) {
+        OutgoingMessageQueue = outgoingMessageQueue;
+        BufferPool = bufferPool;
+        Serializer = serializer;
+    }
 
     public RingBufferByteArray CreateMessage(object packet) {
         var entry = OutgoingMessageQueue.GetNextSequence();
 
-        entry.SetOutgoingContent(Serializer.Serialize(packet));
+        var sequence = BufferPool.GetNextBufferWriter();
+
+        sequence.Reset();
+
+        sequence = Serializer.Serialize(packet, sequence);
+
+        entry.SetOutgoingContent(sequence);
 
         return entry;
     }

@@ -11,7 +11,7 @@ public interface IConnection {
     Socket? Socket { get; set; }
     string IpAddress { get; set; }
     bool Authenticated { get; set; }
-    IEngineBufferPool? EngineBufferPool { get; set; }
+    IEngineBufferPool? IncomingEngineBufferPool { get; set; }
     IIncomingMessageQueue? IncomingMessageQueue { get; set; }
     EventHandler<IConnection>? OnDisconnect { get; set; }
 
