@@ -66,6 +66,8 @@ public sealed class Connection : IConnection {
                 reader.Write(buffer, length);
                 Array.Clear(buffer, 0, length);
 
+                Logger?.Debug("Received Buffer", $"Length {pLength}");
+
                 if (reader.Length() >= 4) {
                     pLength = reader.ReadInt32(false);
 
@@ -78,7 +80,13 @@ public sealed class Connection : IConnection {
                     if (pLength <= reader.Length() - 4) {
                         reader.ReadInt32();
 
+                        Logger?.Debug("Received Packet", $"Length {pLength}");
+
                         var sequence = EngineBufferPool?.GetNextBuffer();
+
+                        if (sequence!.ContentCapacity < pLength) {
+                            sequence!.EnsureCapacity(pLength);
+                        }
 
                         sequence!.Reset();
 

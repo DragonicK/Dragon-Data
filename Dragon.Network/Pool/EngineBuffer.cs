@@ -4,6 +4,7 @@ public sealed class EngineBuffer : IEngineBuffer {
     public int Length { get; set; }
     public byte[] Content { get; private set; }
     public BufferReader Reader { get; private set; }
+    public int ContentCapacity => Content.Length;
 
     public const int Size = 1024;
 
