@@ -5,7 +5,7 @@ namespace Dragon.Network.Outgoing;
 public class OutgoingMessagePublisher(IConnectionRepository connectionRepository) : IOutgoingMessagePublisher {
     public IConnectionRepository ConnectionRepository { get; } = connectionRepository;
 
-    public void Broadcast(TransmissionTarget peers, IList<int> destination, int exceptDestination, IEngineBufferWriter buffer) {
+    public void Broadcast(TransmissionTarget peers, IList<int> destination, int exceptDestination, IBufferWriter buffer) {
         IntegerToByteArray(buffer.Length - 4, buffer.Content, 0);
 
         switch (peers) {
@@ -23,7 +23,7 @@ public class OutgoingMessagePublisher(IConnectionRepository connectionRepository
         }
     }
 
-    private void Broadcast(IList<int> destination, int except, IEngineBufferWriter buffer) {
+    private void Broadcast(IList<int> destination, int except, IBufferWriter buffer) {
         for (var i = 0; i < destination.Count; i++) {
             var id = destination[i];
 
@@ -39,7 +39,7 @@ public class OutgoingMessagePublisher(IConnectionRepository connectionRepository
         }
     }
 
-    private void Broadcast(IList<int> destination, IEngineBufferWriter buffer) {
+    private void Broadcast(IList<int> destination, IBufferWriter buffer) {
         IConnection connection;
 
         for (var i = 0; i < destination.Count; i++) {
@@ -53,7 +53,7 @@ public class OutgoingMessagePublisher(IConnectionRepository connectionRepository
         }
     }
 
-    private void Broadcast(IEngineBufferWriter buffer) {
+    private void Broadcast(IBufferWriter buffer) {
         foreach (var (_, connection) in ConnectionRepository) {
             if (connection is not null) {
                 if (connection.Connected) {
@@ -63,7 +63,7 @@ public class OutgoingMessagePublisher(IConnectionRepository connectionRepository
         }
     }
 
-    private static void Send(IConnection connection, IEngineBufferWriter buffer) {
+    private static void Send(IConnection connection, IBufferWriter buffer) {
         connection.Send(buffer.Content, buffer.Length);
     }
 

@@ -1,6 +1,6 @@
 ﻿namespace Dragon.Network.Pool;
 
-public interface IEngineBufferWriter {
+public interface IBufferWriter {
     int Length { get; }
     int Capacity { get; }
     byte[] Content { get; }

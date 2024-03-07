@@ -15,7 +15,7 @@ public sealed class EngineListener : IEngineListener {
     public int MaximumConnections { get; set; }
     public ILogger? Logger { get; set; }
     public IIndexGenerator IndexGenerator { get; init; }
-    public IEngineBufferPool EngineBufferPool { get; init; }
+    public IBufferPool EngineBufferPool { get; init; }
     public IConnectionRepository ConnectionRepository { get; init; }
     public IIncomingMessageQueue IncomingMessageQueue { get; init; }
     public IOutgoingMessageWriter OutgoingMessageWriter { get; init; }

@@ -6,5 +6,5 @@ public interface IIncomingMessageQueue {
     IIncomingMessageEventHandler IncomingMessageEventHandler { get; }
     void Start();
     void Stop();
-    void Enqueue(IConnection connection, int fromId, IEngineBufferReader sequence);
+    void Enqueue(IConnection connection, int fromId, IBufferReader sequence);
 }

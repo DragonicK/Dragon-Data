@@ -6,7 +6,7 @@ namespace Dragon.Network.Messaging;
 
 public sealed class MessageSerializer : ISerializer {
 
-    public IEngineBufferWriter Serialize<T>(T type, IEngineBufferWriter buffer) {
+    public IBufferWriter Serialize<T>(T type, IBufferWriter buffer) {
         AddEmptyBytesOfPacketSize(buffer);
 
         WriteClass(type, buffer);
@@ -14,11 +14,11 @@ public sealed class MessageSerializer : ISerializer {
         return buffer;
     }
 
-    private static void AddEmptyBytesOfPacketSize(IEngineBufferWriter buffer) {
+    private static void AddEmptyBytesOfPacketSize(IBufferWriter buffer) {
         buffer.Write(0);
     }
 
-    public object Deserialize(IEngineBufferReader buffer, Type type) {
+    public object Deserialize(IBufferReader buffer, Type type) {
         var instance = Activator.CreateInstance(type)!;
 
         buffer.ResetPosition();
@@ -30,17 +30,17 @@ public sealed class MessageSerializer : ISerializer {
 
     #region Read 
 
-    private void ReadClass<T>(T instance, IEngineBufferReader buffer) {
+    private void ReadClass<T>(T instance, IBufferReader buffer) {
         ReadProperties(GetRuntimeProperties(instance), instance, buffer);
     }
 
-    private void ReadProperties<T>(IEnumerable<PropertyInfo> properties, T instance, IEngineBufferReader buffer) {
+    private void ReadProperties<T>(IEnumerable<PropertyInfo> properties, T instance, IBufferReader buffer) {
         foreach (var property in properties) {
             ReadProperty(property, instance, buffer);
         }
     }
 
-    private void ReadProperty<T>(PropertyInfo property, T instance, IEngineBufferReader buffer) {
+    private void ReadProperty<T>(PropertyInfo property, T instance, IBufferReader buffer) {
         var type = property.PropertyType;
 
         if (type == typeof(bool)) {
@@ -79,7 +79,7 @@ public sealed class MessageSerializer : ISerializer {
         }
     }
 
-    private unsafe void ReadArray<T>(PropertyInfo propertyInfo, T obj, IEngineBufferReader buffer) {
+    private unsafe void ReadArray<T>(PropertyInfo propertyInfo, T obj, IBufferReader buffer) {
         var array = propertyInfo.GetValue(obj, null) as Array;
         var length = buffer.ReadInt32();
 
@@ -147,18 +147,18 @@ public sealed class MessageSerializer : ISerializer {
 
     #region Write 
 
-    private void WriteClass<T>(T type, IEngineBufferWriter buffer) {
+    private void WriteClass<T>(T type, IBufferWriter buffer) {
         var properties = GetRuntimeProperties(type);
         WriteProperties(properties, type, buffer);
     }
 
-    private void WriteProperties<T>(IEnumerable<PropertyInfo> properties, T type, IEngineBufferWriter buffer) {
+    private void WriteProperties<T>(IEnumerable<PropertyInfo> properties, T type, IBufferWriter buffer) {
         foreach (var property in properties) {
             WriteProperty(property, type, buffer);
         }
     }
 
-    private void WriteProperty<T>(PropertyInfo property, T obj, IEngineBufferWriter buffer) {
+    private void WriteProperty<T>(PropertyInfo property, T obj, IBufferWriter buffer) {
         var type = property.PropertyType;
         var value = property.GetValue(obj, null);
 
@@ -196,7 +196,7 @@ public sealed class MessageSerializer : ISerializer {
         }
     }
 
-    private void WriteArray(Array array, IEngineBufferWriter buffer) {
+    private void WriteArray(Array array, IBufferWriter buffer) {
         buffer.Write(array.Length);
 
         for (var i = 0; i < array.Length; i++) {

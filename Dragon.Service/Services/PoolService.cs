@@ -7,7 +7,7 @@ namespace Dragon.Service.Services;
 public sealed class PoolService : IService {
     public ServicePriority Priority => ServicePriority.First;
     public ConfigurationService? Configuration { get; private set; }
-    public IEngineBufferPool? EngineBufferPool { get; private set; }
+    public IBufferPool? EngineBufferPool { get; private set; }
     public LoggerService? LoggerService { get; private set; }
 
     public void Start() {
@@ -19,7 +19,7 @@ public sealed class PoolService : IService {
         var outgoingSize = allocated.OutgoingMessageAllocatedSize;
         var incomingSize = allocated.IncomingMessageAllocatedSize;
 
-        EngineBufferPool = new EngineBufferPool(incomingSize, outgoingSize, readerSize, writerSize);
+        EngineBufferPool = new BufferPool(incomingSize, outgoingSize, readerSize, writerSize);
 
         var logger = LoggerService?.Logger;
 

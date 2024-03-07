@@ -11,16 +11,16 @@ public sealed class RingBufferByteArray {
     public TransmissionTarget TransmissionTarget { get; set; }
     public List<int> DestinationPeers { get; set; }
     public int ExceptDestination { get; set; }
-    public IEngineBufferReader? BufferReader { get; private set; }
-    public IEngineBufferWriter? BufferWriter { get; private set; }
+    public IBufferReader? BufferReader { get; private set; }
+    public IBufferWriter? BufferWriter { get; private set; }
 
     public RingBufferByteArray() {
         DestinationPeers = new List<int>(ListSize);
     }
 
-    public void SetOutgoingContent(IEngineBufferWriter buffer) => BufferWriter = buffer;
+    public void SetOutgoingContent(IBufferWriter buffer) => BufferWriter = buffer;
 
-    public void SetIncomingContent(IEngineBufferReader buffer) => BufferReader = buffer;
+    public void SetIncomingContent(IBufferReader buffer) => BufferReader = buffer;
 
     public void Reset() {
         Connection = null;

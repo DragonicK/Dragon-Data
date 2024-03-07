@@ -31,7 +31,7 @@ public sealed class IncomingMessageQueue : IIncomingMessageQueue {
         disruptor.Halt();
     }
 
-    public void Enqueue(IConnection connection, int fromId, IEngineBufferReader buffer) {
+    public void Enqueue(IConnection connection, int fromId, IBufferReader buffer) {
         if (ringbuffer is not null) {
             var sequence = ringbuffer.Next();
             var entry = ringbuffer[sequence];

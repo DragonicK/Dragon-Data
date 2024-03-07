@@ -4,10 +4,10 @@ namespace Dragon.Network.Outgoing;
 
 public class OutgoingMessageWriter : IOutgoingMessageWriter {
     public IOutgoingMessageQueue OutgoingMessageQueue { get; } 
-    public IEngineBufferPool BufferPool { get; } 
+    public IBufferPool BufferPool { get; } 
     public ISerializer Serializer { get; } 
 
-    public OutgoingMessageWriter(IOutgoingMessageQueue outgoingMessageQueue, IEngineBufferPool bufferPool, ISerializer serializer) {
+    public OutgoingMessageWriter(IOutgoingMessageQueue outgoingMessageQueue, IBufferPool bufferPool, ISerializer serializer) {
         OutgoingMessageQueue = outgoingMessageQueue;
         BufferPool = bufferPool;
         Serializer = serializer;

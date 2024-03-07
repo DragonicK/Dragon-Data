@@ -15,7 +15,7 @@ public sealed class Connection : IConnection {
     public Socket? Socket { get; set; }
     public ILogger? Logger { get; set; }
     public bool Connected => connected;
-    public IEngineBufferPool? IncomingEngineBufferPool { get; set; }
+    public IBufferPool? IncomingEngineBufferPool { get; set; }
     public IIncomingMessageQueue? IncomingMessageQueue { get; set; }
     public EventHandler<IConnection>? OnDisconnect { get; set; }
 

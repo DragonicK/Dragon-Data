@@ -43,7 +43,7 @@ public sealed class IncomingMessageEventHandler : IIncomingMessageEventHandler {
         }
     }
 
-    private void Execute(int value, IEngineBufferReader buffer, IConnection connection) {
+    private void Execute(int value, IBufferReader buffer, IConnection connection) {
         var header = (MessageHeader)value;
 
         if (MessageRepository.Contains(header)) {

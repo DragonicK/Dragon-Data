@@ -2,7 +2,7 @@
 
 namespace Dragon.Network.Pool;
 
-public sealed class EngineBufferReader(int size) : IEngineBufferReader { 
+public sealed class BufferReader(int size) : IBufferReader { 
     public int Length { get; set; }
     public byte[] Content { get; private set; } = new byte[size];
     public int Capacity => Content.Length;
@@ -69,7 +69,7 @@ public sealed class EngineBufferReader(int size) : IEngineBufferReader {
         var length = ReadInt32();
 
         if (length > 0) {
-            var text = Encoding.UTF8.GetString(Content, position, length);
+            var text = Encoding.ASCII.GetString(Content, position, length);
 
             position += length;
 

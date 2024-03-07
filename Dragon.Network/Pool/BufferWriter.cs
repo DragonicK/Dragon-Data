@@ -2,7 +2,7 @@
 
 namespace Dragon.Network.Pool;
 
-public sealed class EngineBufferWriter(int size) : IEngineBufferWriter {
+public sealed class BufferWriter(int size) : IBufferWriter {
     public int Length => position;
     public byte[] Content { get; private set; } = new byte[size];
     public int Capacity => Content.Length;
